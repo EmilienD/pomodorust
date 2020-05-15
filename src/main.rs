@@ -1,28 +1,5 @@
-use std::{thread, time::Duration};
-
-struct Configuration<'a> {
-    short_break_duration: Duration,
-    long_break_duration: Duration,
-    work_session_duration: Duration,
-    pre_short_break_message: &'a String,
-    pre_long_break_message: &'a String,
-    pre_work_session_message: &'a String,
-}
-
-enum ItemType {
-    LongBreak,
-    ShortBreak,
-    WorkSession,
-}
-
-struct Item<'a> {
-    remaining_duration: Duration,
-    start_message: &'a String,
-}
-
-struct Cycle<'a> {
-    items: Vec<Item<'a>>,
-}
+use pomodorust::*;
+use std::time::Duration;
 
 fn main() {
     use ItemType::*;
@@ -37,9 +14,14 @@ fn main() {
         pre_long_break_message: &String::from(
             "You've done a lot of work already, sweetie! Enjoy a 25 minutes break!",
         ),
-        pre_work_session_message: &String::from(
+        pre_work_session_message: &String::from(""),
+        post_short_break_message: &String::from(
             "Hope you enjoyed the break, now back to work handsome!",
         ),
+        post_long_break_message: &String::from(
+            "Hope that was a relaxing break, now back to work, chief!",
+        ),
+        post_work_session_message: &String::from(""),
     };
     let pomodoro = create_pomodoro(
         &vec![
@@ -54,32 +36,6 @@ fn main() {
         ],
         configuration,
     );
-    loop {
-        for item in &pomodoro.items {
-            println!("{}", item.start_message);
-            thread::sleep(item.remaining_duration);
-        }
-    }
-}
-
-fn create_pomodoro<'a>(item_types: &Vec<ItemType>, configuration: Configuration<'a>) -> Cycle<'a> {
-    use ItemType::*;
-    let items = item_types
-        .iter()
-        .map(|item_type| match item_type {
-            LongBreak => Item {
-                start_message: configuration.pre_long_break_message,
-                remaining_duration: configuration.long_break_duration,
-            },
-            ShortBreak => Item {
-                start_message: configuration.pre_short_break_message,
-                remaining_duration: configuration.short_break_duration,
-            },
-            WorkSession => Item {
-                start_message: configuration.pre_work_session_message,
-                remaining_duration: configuration.work_session_duration,
-            },
-        })
-        .collect();
-    Cycle { items }
+    println!("Let's get some shit done, comrade!");
+    start_pomodoro(pomodoro)
 }
