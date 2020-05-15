@@ -72,10 +72,8 @@ fn cycling(pomodoro: &Cycle, timer: &mut impl FnMut(Duration), output: &mut impl
   }
 }
 
-pub fn start_pomodoro(pomodoro: Cycle) {
-  loop {
-    cycling(&pomodoro, &mut thread::sleep, &mut std_output)
-  }
+pub fn start_pomodoro(pomodoro: &Cycle) {
+  cycling(&pomodoro, &mut thread::sleep, &mut std_output)
 }
 
 #[cfg(test)]
